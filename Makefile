@@ -1,8 +1,14 @@
-all: grunt build
+.PHONY: frontend backend
+	
+all: frontend backend
+	mkdir -p dist
+	cp -rf frontend/dist/ dist/
+	cp -rf backend/dist/ dist/
+	cp README.md dist/
+	cp LICENSE dist/
 
-grunt:
-	grunt
+frontend:
+	docker-compose run --rm frontend bash -c "npm install && npm run build"
 
-build:
-	GOOS=linux GOARCH=amd64 go build -o ./dist/aws-athena-plugin_linux_amd64 .
-	GOOS=darwin GOARCH=amd64 go build -o ./dist/aws-athena-plugin_darwin_amd64 .
+backend:
+	docker-compose run --rm backend make

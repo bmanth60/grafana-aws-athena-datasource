@@ -1,37 +1,19 @@
-node_modules
-npm-debug.log
-coverage/
-.aws-config.json
-awsconfig
-/emails/dist
-/public_gen
-/tmp
-vendor/phantomjs/phantomjs
+# Docker
+docker-compose.override.yml
+.netrc
+Dockerfile.prod
 
-docs/AWS_S3_BUCKET
-docs/GIT_BRANCH
-docs/VERSION
-docs/GITCOMMIT
-docs/changed-files
-docs/changed-files
+# Go workspace
+_workspace/
+pkg/
 
-# locally required config files
-public/css/*.min.css
+# The app build from go build
+/**/dist/
 
-# Editor junk
-*.sublime-workspace
-*.swp
-.idea/
-*.iml
+# App dependencies
+vendor/
+certs/
 
-/data/*
-/bin/*
-
-conf/custom.ini
-fig.yml
-profile.cov
-grafana
-.notouch
-
-# Test artifacts
-/dist/test/
+# Reporting
+reports/
+coverage.*

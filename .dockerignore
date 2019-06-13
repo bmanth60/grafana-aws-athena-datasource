@@ -1,0 +1,9 @@
+# Exclude git from build
+.git/
+
+# Exclude docker related artifacts
+docker*
+Docker*
+
+# Exclude netrc credentials
+.netrc

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  frontend:
+    image: node:12.4-stretch
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+  backend:
+    image: golang:1.12.6
+    volumes:
+      - ./backend:/go/src/github.com/redbrickmedia/grafana-aws-athena-datasource
+    working_dir: /go/src/github.com/redbrickmedia/grafana-aws-athena-datasource
+    environment:
+      GO111MODULE: "on"
