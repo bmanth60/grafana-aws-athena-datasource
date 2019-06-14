@@ -18,12 +18,8 @@
     "noEmitOnError": false,
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": false,
-    "noImplicitUseStrict": false,
-    "noImplicitAny": false,
-    "noUnusedLocals": true,
-    "strictNullChecks": true
+    "strict": true,
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*.ts",
