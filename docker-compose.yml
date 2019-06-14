@@ -1,4 +1,7 @@
 version: '3'
+volumes:
+  grafana-db:
+    
 services:
   frontend:
     image: node:12.4-stretch
@@ -9,6 +12,20 @@ services:
     image: golang:1.12.6
     volumes:
       - ./backend:/go/src/github.com/redbrickmedia/grafana-aws-athena-datasource
+      - ./.cache:/go/pkg/mod
+      - ./.cache:/go-cache
     working_dir: /go/src/github.com/redbrickmedia/grafana-aws-athena-datasource
     environment:
       GO111MODULE: "on"
+      GOCACHE: "/go-cache"
+  grafana:
+    image: grafana/grafana:6.2.2
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-db:/var/lib/grafana
+      - ./dist:/var/lib/grafana/plugins/grafana-aws-athena-datasource
+    environment:
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SESSION_TOKEN:

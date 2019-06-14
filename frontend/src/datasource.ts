@@ -1,5 +1,6 @@
 import TableModel from 'grafana/app/core/table_model'
 import _ from 'lodash'
+import uuidv4 from 'uuid/v4'
 
 export class AwsAthenaDatasource {
     type: string
@@ -50,7 +51,7 @@ export class AwsAthenaDatasource {
             })
     }
 
-    doRequest(options: any) {
+    doRequest(options: any): Promise<any> {
         return this.backendSrv
             .datasourceRequest({
                 url: '/api/tsdb/query',
@@ -65,6 +66,10 @@ export class AwsAthenaDatasource {
                 const res: any = []
                 for (const query of options.data.targets) {
                     const r = result.data.results[query.refId]
+                    if (!r) {
+                        continue
+                    }
+
                     if (!_.isEmpty(r.series)) {
                         _.forEach(r.series, (s) => {
                             res.push({ target: s.name, datapoints: s.points })
@@ -98,7 +103,7 @@ export class AwsAthenaDatasource {
                 valueColumn: target.valueColumn,
                 legendFormat: target.legendFormat || '',
                 input: {
-                    queryExecutionId: this.templateSrv.replace(target.queryExecutionId, options.scopedVars),
+                    queryExecutionId: this.templateSrv.replace(target.queryExecutionId, options.scopedVars) || uuidv4(),
                 },
             }
         })
@@ -143,31 +148,36 @@ export class AwsAthenaDatasource {
         return this.q.when([])
     }
 
-    doMetricQueryRequest(subtype: any, parameters: any) {
+    async doMetricQueryRequest(subtype: any, parameters: any) {
         const range = this.timeSrv.timeRange()
-        return this.backendSrv
-            .datasourceRequest({
-                url: '/api/tsdb/query',
-                method: 'POST',
-                data: {
-                    from: range.from.valueOf().toString(),
-                    to: range.to.valueOf().toString(),
-                    queries: [
-                        _.extend(
-                            {
-                                refId: 'metricFindQuery',
-                                datasourceId: this.id,
-                                queryType: 'metricFindQuery',
-                                subtype,
-                            },
-                            parameters
-                        ),
-                    ],
-                },
-            })
-            .then((r: any) => {
-                return this.transformSuggestDataFromTable(r.data)
-            })
+        const response = await this.execMetricQueryRequest(this.id, range, subtype, parameters)
+        if (response.status < 200 || response.status > 299) {
+            throw Error('Metric response failed: ' + response.statusText)
+        }
+
+        return this.transformSuggestDataFromTable(response.data)
+    }
+
+    execMetricQueryRequest(id: any, range: any, subtype: any, parameters: any): Promise<any> {
+        return this.backendSrv.datasourceRequest({
+            url: '/api/tsdb/query',
+            method: 'POST',
+            data: {
+                from: range.from.valueOf().toString(),
+                to: range.to.valueOf().toString(),
+                queries: [
+                    _.extend(
+                        {
+                            refId: 'metricFindQuery',
+                            datasourceId: id,
+                            queryType: 'metricFindQuery',
+                            subtype,
+                        },
+                        parameters
+                    ),
+                ],
+            },
+        })
     }
 
     transformSuggestDataFromTable(suggestData: any) {

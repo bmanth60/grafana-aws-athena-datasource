@@ -1,16 +1,15 @@
 package main
 
 import (
-	"os"
-
-	"log"
-
 	"github.com/grafana/grafana_plugin_model/go/datasource"
 	plugin "github.com/hashicorp/go-plugin"
+	"log"
+	"os"
 )
 
 func main() {
 	log.SetOutput(os.Stderr) // the plugin sends logs to the host process on strErr
+	log.Println("test")
 
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: plugin.HandshakeConfig{

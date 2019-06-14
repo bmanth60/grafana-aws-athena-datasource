@@ -3,7 +3,6 @@ export class AwsAthenaDatasourceConfigCtrl {
     current: any
     accessKeyExist: any
     secretKeyExist: any
-    sessionTokenExist: any
     datasourceSrv: any
     authTypes: any
 
@@ -13,7 +12,6 @@ export class AwsAthenaDatasourceConfigCtrl {
 
         this.accessKeyExist = this.current.secureJsonFields.accessKey
         this.secretKeyExist = this.current.secureJsonFields.secretKey
-        this.sessionTokenExist = this.current.secureJsonFields.sessionToken
         this.datasourceSrv = datasourceSrv
         this.authTypes = [
             { name: 'Access & secret key', value: 'keys' },

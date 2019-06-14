@@ -101,6 +101,10 @@ func (t *AwsAthenaDatasource) handleQuery(tsdbReq *datasource.DatasourceRequest)
 	}
 	to := time.Unix(toRaw/1000, toRaw%1000*1000*1000)
 	for _, target := range targets {
+		if target.Input.QueryExecutionId == nil {
+			continue
+		}
+
 		svc, err := t.getClient(tsdbReq.Datasource, target.Region)
 		if err != nil {
 			return nil, err
@@ -112,7 +116,7 @@ func (t *AwsAthenaDatasource) handleQuery(tsdbReq *datasource.DatasourceRequest)
 		}
 
 		switch target.Format {
-		case "timeserie":
+		case "timeseries":
 			r, err := parseTimeSeriesResponse(resp, target.RefId, from, to, target.TimestampColumn, target.ValueColumn, target.LegendFormat)
 			if err != nil {
 				return nil, err

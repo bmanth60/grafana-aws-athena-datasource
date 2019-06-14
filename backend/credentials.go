@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 	"time"
@@ -116,7 +117,12 @@ func GetCredentials(dsInfo *DatasourceInfo) (*credentials.Credentials, error) {
 			}},
 			&credentials.SharedCredentialsProvider{Filename: "", Profile: dsInfo.Profile},
 			remoteCredProvider(sess),
-		})
+		},
+	)
+
+	val, err := creds.Get()
+	log.Printf("%#v\n", val)
+	log.Printf("%#v\n", err)
 
 	credentialCacheLock.Lock()
 	awsCredentialCache[cacheKey] = cache{

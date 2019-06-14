@@ -17,3 +17,6 @@ certs/
 # Reporting
 reports/
 coverage.*
+
+# cache
+.cache/
